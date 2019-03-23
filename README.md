@@ -35,7 +35,7 @@ admin   moderator   normal
 -----------
 0- Can "cancel or edit"(review) his/her own requests.
 1- Can request file transfer to be reviewed later by a moderator.
-2- Can create non moderator(admin or normal) account and delete or edit any account except most privileged one(admin + moderator). 
+2- Can create non moderator(admin or normal) account and delete, block or edit any account except most privileged one(admin + moderator). 
 3- Can not create an account with moderator privilege.
 4- Can view and download other's approved requests of which he/she is a recipient.
 
