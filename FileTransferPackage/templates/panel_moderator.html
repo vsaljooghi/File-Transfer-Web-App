@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% block bodycontent %}
+  <div class="container">
+    <div class="row">
+       {% from "includes/_colorize.html" import colorize %}
+       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">  <!-- All Requests Table -->
+         <a href="{{ url_for('x_reqs', type='all') }}" ><span class="text-info">All Requests:</span></a>
+         <table class="table table-striped table-hover tb-condensed">
+            <thead>
+              <tr>
+                <th>Requester</th>
+                <th>FileName</th>
+                <th>Info</th>
+                <th>State</th>
+                <th>Action/Reviewer</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for all_req in all_reqs.items %}
+              <tr>
+                <td><a class="mr-2" href="{{ url_for('x_reqs', username=all_req.requester.username, type='out') }}">{{ all_req.requester.username }}</a></td>
+                <td><a href="{{ url_for('download_file', filename=all_req.FileName) }}">{{ all_req.FileName }}</a></td>
+                <td><a class="Req_Info" id="{{ all_req.id }}" href="#">{{ all_req.FileSize | filesizeformat }}</a></td>
+                <td><a href="{{ url_for('x_reqs', username=all_req.requester.username, state=all_req.state.state) }}">{{ colorize(all_req.state.state) }}</a></td>
+                <td>
+                  {%if all_req.state.state=="pending" %}
+                   <a class="btn btn-info btn-sm m-1" href="{{ url_for('edit_req', req_id=all_req.id) }}"))> Edit </a>   
+                   <a class="btn btn-success btn-sm m-1 reqAction" data-req_action="approved" data-req_id="{{ all_req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Approve</a>   
+                   <a class="btn btn-danger btn-sm m-1 reqAction" data-req_action="denied" data-req_id="{{ all_req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Deny</a>
+                  {% else %}
+                    <span>{{ all_req.reviewer.surname }} ({{ all_req.reviewer.name }})</span>                  
+                  {% endif %} 
+                   <a class="btn btn-primary btn-sm m-1" href="{{ url_for('fw_req', req_id=all_req.id) }}"))> FW </a>   
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+         </table>
+         
+         <div class="text-center">
+           {% for page_num in all_reqs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+             {% if page_num %}
+               {% if all_reqs.page == page_num %}
+                 <a class="btn btn-info btn-sm mb-2" href="{{ url_for('panel', all_page=page_num, in_page=in_page, out_page=out_page) }}">{{ page_num }}</a>
+               {% else %}
+                 <a class="btn btn-outline-info btn-sm mb-2" href="{{ url_for('panel', all_page=page_num, in_page=in_page, out_page=out_page) }}">{{ page_num }}</a>
+               {% endif %}
+             {% else %}
+               ...
+             {% endif %}
+           {% endfor %}
+         </div>
+ 
+
+         <a href="{{ url_for('x_reqs', type='in') }}" ><span class="text-info">Inbox:</span></a>
+         <table class="table table-striped table-hover tb-condensed"> <!-- Inbox Request Table -->
+            <thead>
+              <tr>
+                <th>Requester</th>
+                <th>FileName</th>
+                <th>Info</th>
+                <th>State</th>
+                <th>Action/Reviewer</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for in_req in in_reqs.items %}
+              <tr>              
+                <td><a class="mr-2" href="{{ url_for('x_reqs', username=in_req.requester.username, type='out') }}">{{ in_req.requester.username }}</a></td>
+                <td><a href="{{ url_for('download_file', filename=in_req.FileName) }}">{{ in_req.FileName }}</a></td>
+                <td><a class="Req_Info" id="{{ in_req.id }}" href="#">{{ in_req.FileSize | filesizeformat }}</a></td>
+                <td><a href="{{ url_for('x_reqs', username=in_req.requester.username, state=in_req.state.state) }}">{{ colorize(in_req.state.state) }}</a></td>
+                <td>
+                  {%if in_req.state.state=="pending" %}
+                   <a class="btn btn-info btn-sm m-1" href="{{ url_for('edit_req', req_id=in_req.id) }}"))> Edit </a>   
+                   <a class="btn btn-success btn-sm m-1 reqAction" data-req_action="approved" data-req_id="{{ in_req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Approve</a>   
+                   <a class="btn btn-danger btn-sm m-1 reqAction" data-req_action="denied" data-req_id="{{ in_req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Deny</a>
+                  {% else %}
+                    <span>{{ in_req.reviewer.surname }} ({{ in_req.reviewer.name }})</span>     
+                   {% endif %}
+                   <a class="btn btn-primary btn-sm m-1" href="{{ url_for('fw_req', req_id=in_req.id) }}"))> FW </a>                  
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+         </table>
+         
+         <div class="text-center">
+           {% for page_num in in_reqs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+             {% if page_num %}
+               {% if in_reqs.page == page_num %}
+                 <a class="btn btn-info btn-sm mb-2" href="{{ url_for('panel', all_page=all_page, in_page=page_num, out_page=out_page) }}">{{ page_num }}</a>
+               {% else %}
+                 <a class="btn btn-outline-info btn-sm mb-2" href="{{ url_for('panel', all_page=all_page, in_page=page_num, out_page=out_page) }}">{{ page_num }}</a>
+               {% endif %}
+             {% else %}
+               ...
+             {% endif %}
+           {% endfor %}
+         </div>
+ 
+
+         <a href="{{ url_for('x_reqs', type='out') }}" ><span class="text-info">Outbox:</span></a>
+         <table class="table table-striped table-hover tb-condensed">  <!-- Outbox Request Table -->
+            <thead>
+              <tr>
+                <th>FileName</th>
+                <th>Info</th>
+                <th>State</th>
+                <th>Action/Reviewer</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for out_req in out_reqs.items %}
+              <tr>
+                <td><a href="{{ url_for('download_file', filename=out_req.FileName) }}">{{ out_req.FileName }}</a></td>
+                <td><a class="Req_Info" id="{{ out_req.id }}" href="#">{{ out_req.FileSize | filesizeformat }}</a></td>
+                <td><a href="{{ url_for('x_reqs', state=out_req.state.state) }}">{{ colorize(out_req.state.state) }}</a></td>
+                <td>
+                  {%if out_req.state.state=="pending" %}
+                   <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('req_actions', action='cancelled', req_id=out_req.id) }}")> Cancel </a>    
+                   <a class="btn btn-info btn-sm m-1" href="{{ url_for('edit_req', req_id=out_req.id) }}"))> Edit </a>   
+                   <a class="btn btn-success btn-sm m-1 reqAction" data-req_action="approved" data-req_id="{{ out_req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Approve</a>   
+                   <a class="btn btn-danger btn-sm m-1 reqAction" data-req_action="denied" data-req_id="{{ out_req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Deny</a>
+                  {% else %}
+                    <span>{{ out_req.reviewer.surname }} ({{ out_req.reviewer.name }})</span>    
+                  {% endif %} 
+                   <a class="btn btn-primary btn-sm m-1" href="{{ url_for('fw_req', req_id=out_req.id) }}"))> FW </a>                     
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+         </table>
+         
+         <div class="text-center">
+           {% for page_num in out_reqs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+             {% if page_num %}
+               {% if out_reqs.page == page_num %}
+                 <a class="btn btn-info btn-sm mb-2" href="{{ url_for('panel', all_page=all_page, in_page=in_page, out_page=page_num) }}">{{ page_num }}</a>
+               {% else %}
+                 <a class="btn btn-outline-info btn-sm mb-2" href="{{ url_for('panel', all_page=all_page, in_page=in_page, out_page=page_num) }}">{{ page_num }}</a>
+               {% endif %}
+             {% else %}
+               ...
+             {% endif %}
+           {% endfor %}
+         </div>
+ 
+       </div>
+
+       <div class="col-xs-12 col-sm-9 col-md-6 col-lg-3">  <!-- sidebar -->
+          <div class="content-section">
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light"><b>Description:</b></br><span id="req_desc"></span></li>
+                <li class="list-group-item list-group-item-light" id="recipients_li_item"><b>Recipients:</b></br><span id="req_recip"></span></li>
+                <li class="list-group-item list-group-item-light"><b>Request Date:</b></br><span id="req_date"></span></li>
+                <li class="list-group-item list-group-item-light"><b>Review Date:</b></br><span id="rev_date"></span></li>
+                <li class="list-group-item list-group-item-light"><b>Reviewer Comment:</b></br><span id="rev_comment"></span></li>
+              </ul>
+          </div>
+       </div> 
+       
+    </div>
+
+    <!-- Modal for reviewer comment -->
+    <div class="modal fade" id="reviewerCommentModal" tabindex="-1" role="dialog" aria-labelledby="reviewerCommentModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+           <div class="modal-header">
+            <h5 class="modal-title" id="reviewerCommentModalLabel">Comment:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        
+          <div class="modal-body">
+             <textarea id="reviewerCommentTxt" rows="3" max-rows="6" cols="49" max-cols="49" maxlength="200"></textarea> 
+          </div>
+          
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="button" class="btn btn-primary" id="reviewerCommentContinue" />Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock bodycontent %}

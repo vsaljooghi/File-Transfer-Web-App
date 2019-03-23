@@ -1,0 +1,13 @@
+{% macro colorize(statement) %}
+    {% if statement=="pending" or statement=="admin" %}
+        <span class="text-warning">{{ statement }}</span>
+    {% elif statement=="approved" %}
+        <span class="text-success">{{ statement }}</span>
+    {% elif statement=="denied" %}
+        <span class="text-danger">{{ statement }}</span>
+    {% elif statement=="cancelled" or statement=="normal" %}
+        <span class="text-secondary">{{ statement }}</span>
+    {% elif statement=="moderator" %}
+        <span class="text-info">{{ statement }}</span>
+    {% endif %}       
+{% endmacro %}

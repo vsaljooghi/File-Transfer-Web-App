@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/png" href={{ url_for('static', filename='img/FileTransfer.png') }}>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+        {% if title %}
+            <title>File Transfer - {{ title }}</title>
+        {% else %}
+            <title>File Transfer</title>
+        {% endif %}
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+             <h1 class="navbar-brand mr-4" > Hello {{ current_user.username }}           
+              {% if current_user.permission == 6 %}<span class="text-warning fa fa-crown ml-2"></span><span class="text-info fa fa-award ml-2"></span> 
+              {% elif current_user.permission == 4 %}<span class="text-warning fa fa-crown ml-2"></span> 
+              {% elif current_user.permission == 2 %}<span class="text-info fa fa-award ml-2"></span> 
+              {% else %}<span class="text-primary fa fa-user ml-2"></span>{% endif %}
+              <small>Last login at: {{ current_user.last_login.strftime('%Y-%m-%d %H:%M') }}</small>
+             </h1>
+                  
+             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+             </button>
+                  
+             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ url_for('trans_req') }}"><span class="fa fa-file-upload"></span> Transfer Request</a>
+                        </li>
+                           {% if current_user.permission == 6 or current_user.permission == 4 %}                      
+                         <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="account_mgm_menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Account Management
+                              <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelled-by="account_mgm_menu">
+                              <a class="dropdown-item text-success" href="{{ url_for('create_account') }}"> <span class="fa fa-user-plus"></span> Create Account </a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item text-danger" href="{{ url_for('delete_accounts') }}"> <span class="fa fa-user-minus"></span> Delete Account </a>
+                              <div class="dropdown-divider"></div>                                    
+                              <a class="dropdown-item text-info" href="{{ url_for('edit_accounts') }}"> <span class="fa fa-user-edit"></span> Edit Account </a>
+                            </div>
+                        </li>
+                        {% endif %}                  
+                    </ul>
+                
+                    <a class="nav-item nav-link" href="{{ url_for('panel') }}"><span class="fa fa-home"></span> Panel </a>
+                    <a class="nav-item nav-link" href="{{ url_for('logout') }}"><span class="fa fa-sign-out-alt"></span> Logout</a>
+              </div>
+        </nav>
+        
+        <main role="main" class="container">
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                      {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                          {{ message }}
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                  {% endwith %}
+                </div>
+              </div>
+            {% block bodycontent %}{% endblock %}
+        </main>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
+        <script type=text/javascript>$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/delUser.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/reqAction.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/AJAX2GetReqInfo.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/searchContacts.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/SelectContacts.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/ImportContacts.js') }}"></script>
+    </body>
+</html>

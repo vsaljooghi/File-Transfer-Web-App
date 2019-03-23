@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block bodycontent %}
+    <div class="container-fluid">
+       {% from "includes/_colorize.html" import colorize %}
+       <input type="search" id="mysearchBox" onkeyup="findContact()" placeholder="Search for contact...">
+       <table id="mycontactTable" class="table table-striped table-hover tb-condensed">
+           <tr>
+              <th>name</th>
+              <th>surname</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Action</th>
+           </tr>
+         {% for user in users.items %}
+           <tr>
+              <td>{{ user.name }}</td>
+              <td>{{ user.surname }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                {% for role in user.roles %}
+                  <a href="{{ url_for('delete_accounts', role=role.role) }}"))>{{ colorize(role.role) }}</a>
+                {% endfor %}
+              </td>
+              <td>               
+                {% if user.permission != 6 or current_user.permission == 6 %}
+                  <button type="button" class="btn btn-danger btn-sm m-1 delUser_Dialog" data-user_id="{{ user.id }}" data-toggle="modal" data-target="#deleteUserModal">Delete</button>
+                {% endif %}
+              </td>               
+           </tr>
+         {% endfor %}
+       </table>
+     
+       <div class="col-md-12 text-center">
+         {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+           {% if page_num %}
+             {% if users.page == page_num %}
+               <a class="btn btn-info btn-sm mb-2" href="{{ url_for('delete_accounts', page=page_num) }}">{{ page_num }}</a>
+             {% else %}
+               <a class="btn btn-outline-info btn-sm mb-2" href="{{ url_for('delete_accounts', page=page_num) }}">{{ page_num }}</a>
+             {% endif %}
+           {% else %}
+             ...
+           {% endif %}
+         {% endfor %}
+       </div>
+       
+       <!-- Modal for User delete -->
+          <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteUserModalLabel">Delete User?</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <form action="" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                  </form>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        
+    </div>
+{% endblock bodycontent %}

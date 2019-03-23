@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+{% block bodycontent %}
+<div class="container">
+  <div class="row">
+    {% from "includes/_colorize.html" import colorize %}
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
+       {% if type == 'all' or type == 'in' %}
+         <h5 class="mb-3"> total number of requests: <span class="badge badge-warning"> {{ reqs.total }}</span></h5>
+       {% else %}
+         <h5 class="mb-3"> number of {{ colorize(state) }} requests by {{ username }}: <span class="badge badge-warning"> {{ reqs.total }}</span></h5>
+       {% endif %}
+       
+       <table class="table table-striped table-hover tb-condensed">
+          <thead>
+            <tr>
+               {% if type == 'all' or type == 'in' %}
+               <th> Requester </th>
+               {% endif %}
+               
+               <th>FileName</th>
+               <th>Request Date</th>
+               <th>Info</th>
+               {% if state == '' %}
+               <th>State</th>
+               {% endif %}
+               <th>Action/Reviewer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in reqs.items %}
+             <tr>
+               {% if type == 'all' or type == 'in' %}
+               <td> {{ req.requester.username }} </td>
+               {% endif %}
+               
+               <td>
+               {% if current_user.permission==6 or current_user.permission==2 or req.state.state=="approved" %}
+                  <a href="{{ url_for('download_file', filename=req.FileName) }}">{{ req.FileName }}</a>
+               {% else %}
+                  {{ req.FileName }}
+               {% endif %}
+               </td>
+               
+               <td>{{ req.req_date.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+               <td><a class="Req_Info" id="{{ req.id }}" href="#">{{ req.FileSize | filesizeformat(true) }}</a></td>
+               {% if state == '' %}
+               <td>{{ colorize(req.state.state) }}</td>
+               {% endif %}
+
+               <td>
+               {% if req.state.state=="pending" %}
+                  {% if (current_user.permission==6 or current_user.permission==2) and type!='out' %}
+                     <a class="btn btn-info btn-sm m-1" href="{{ url_for('edit_req', req_id=req.id) }}"))> Edit </a>    
+                     <a class="btn btn-success btn-sm m-1 reqAction" data-req_action="approved" data-req_id="{{ req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Approve</a>   
+                     <a class="btn btn-danger btn-sm m-1 reqAction" data-req_action="denied" data-req_id="{{ req.id }}" data-toggle="modal" data-target="#reviewerCommentModal">Deny</a>
+                  {% else %}
+                     <a class="btn btn-danger btn-sm m-1" href="{{ url_for('req_actions', action='cancelled', req_id=req.id) }}")> Cancel </a>    
+                     <a class="btn btn-info btn-sm m-1" href="{{ url_for('edit_req', req_id=req.id) }}"))> Edit </a> 
+                  {% endif %}
+               {% else %}
+                    <span>{{ req.reviewer.surname }} ({{ req.reviewer.name }})</span>     
+               {% endif %}
+                    <a class="btn btn-primary btn-sm m-1" href="{{ url_for('fw_req', req_id=req.id) }}"))> FW </a>                  
+               </td>
+             </tr>
+           {% endfor %}
+          </tbody>
+       </table>
+       
+       <div class="text-center">
+        {% for page_num in reqs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+           {% if page_num %}
+             {% if reqs.page == page_num %}
+               <a class="btn btn-info btn-sm mb-2" href="{{ url_for('x_reqs', type=type, state=state, username=username, page=page_num) }}">{{ page_num }}</a>
+             {% else %}
+               <a class="btn btn-outline-info btn-sm mb-2" href="{{ url_for('x_reqs', type=type, state=state, username=username, page=page_num) }}">{{ page_num }}</a>
+             {% endif %}
+           {% else %}
+             ...
+           {% endif %}
+        {% endfor %}
+       </div> 
+    </div>
+    
+    <!-- sidebar -->
+    <div class="col-xs-12 col-sm-9 col-md-6 col-lg-3">
+       <div class="content-section">
+          <ul class="list-group">
+            <li class="list-group-item list-group-item-light"><b>Description:</b></br><span id="req_desc"></span></li>
+            <li class="list-group-item list-group-item-light" id="recipients_li_item"><b>Recipients:</b></br><span id="req_recip"></span></li>
+            <li class="list-group-item list-group-item-light"><b>Request Date:</b></br><span id="req_date"></span></li>
+            <li class="list-group-item list-group-item-light"><b>Review Date:</b></br><span id="rev_date"></span></li>
+            <li class="list-group-item list-group-item-light"><b>Reviewer Comment:</b></br><span id="rev_comment"></span></li>
+          </ul>
+       </div>
+    </div> 
+    
+  </div>
+  
+    <!-- Modal for reviewer comment -->
+    <div class="modal fade" id="reviewerCommentModal" tabindex="-1" role="dialog" aria-labelledby="reviewerCommentModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+           <div class="modal-header">
+            <h5 class="modal-title" id="reviewerCommentModalLabel">Comment:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        
+          <div class="modal-body">
+             <textarea id="reviewerCommentTxt" rows="3" max-rows="6" cols="49" max-cols="49" maxlength="200"></textarea> 
+          </div>
+          
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="button" class="btn btn-primary" id="reviewerCommentContinue" />Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock bodycontent %}

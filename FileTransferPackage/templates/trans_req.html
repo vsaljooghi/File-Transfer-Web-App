@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% block bodycontent %}
+<div class="container">
+    {% from "includes/_formhelpers.html" import render_field %}
+    <form method="POST" action="" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">{{ title }}</legend>
+        <div class="form-group">
+          {{ form.file.label() }}
+          {{ form.file(class="form-control-file") }}
+           {% if form.file.errors %}
+              {% for error in form.file.errors %}
+                 <span class="text-danger">{{ error }}</span></br>
+              {% endfor %}
+           {% endif %}
+        </div>
+           
+        <div class="form-group"> {{ render_field(form.comment) }} </div>
+        
+        <div class="text-right">  <!-- Modal to select contacts -->
+          <button type="button" id="Select_Contacts" class="btn btn-info btn-sm" data-toggle="modal" data-target="#ContactModal">Select Contacts</button>
+        </div>
+        
+        <div class="form-group p-0"> {{ render_field(form.recipients) }} </div>
+      
+      </fieldset>
+            
+      <div class="form-group">
+         {{ form.submit(class="btn btn-outline-info") }}
+      </div>
+    </form>
+    
+    <div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-800" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contacts:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4" id="result">    
+                    <div class="content-section">
+                       <input type="search" id="mysearchBox" onkeyup="findContact()" placeholder="Search for contact..">
+                       <table id="mycontactTable" class="table table-striped table-hover tb-condensed">
+                            <tr>
+                               <th>Name</th>
+                               <th>Surname</th>
+                               <th>Username</th>
+                               <th>Email</th>
+                               <th>Select</th>
+                            </tr>
+                          {% for user in users %}
+                            <tr>
+                               <td>{{ user.name }}</td>
+                               <td>{{ user.surname }}</td>
+                               <td>{{ user.username }}</td>
+                               <td>{{ user.email }}</td>
+                               <td>    
+                                  <input type="checkbox" name="contact_check">
+                               </td>
+                            </tr>
+                          {% endfor %}
+                       </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="Import_Contacts">Import Contacts</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+</div>
+{% endblock bodycontent %}
