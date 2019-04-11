@@ -5,13 +5,24 @@ an open access computer network (The web app acts as a gatekeeper between two ne
 It provides the capability for account management(create, edit, delete, block account) and request management(approve, cancel, deny, 
 edit, forward). The file transfer request shall be reviewed by a reviewer and in case of approvement, the requester can download the file.</p>
 
+![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/Diagram_FileTransfer.png)
+
 ![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/home_page.png)
 
 ![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/panel_moderator.png)
 
+![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/DB_diagram.png)
+
+![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/edit_accounts.png)
+
+![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/delete_accounts.png)
+
+![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/trans_req.png)
+
+
 ## How to setup:
 
-In __init__.py
+### In __init__.py
 --------------------
 ### 0- setup configuration for mail server credential.
 
@@ -19,7 +30,7 @@ In __init__.py
 
 
 
-To initiate first user in an empty database:
+### To initiate first user in an empty database:
 -------------------------------------
 ### 0- Go to python REPL inside application folder
 
@@ -40,13 +51,13 @@ To initiate first user in an empty database:
 
 ## User Privileges:
 
-Permission:
+### Permission:
 ------------
 ### admin   moderator   normal
 ###   4         2         0
 
 
- Admin(4):
+### Admin(4):
 -----------
 ### 0- Can "cancel or edit"(review) his/her own requests.
 ### 1- Can request file transfer to be reviewed later by a moderator.
@@ -54,13 +65,13 @@ Permission:
 ### 3- Can not create an account with moderator privilege.
 ### 4- Can view and download other's approved requests of which he/she is a recipient.
 
- Moderator(2):
+### Moderator(2):
 ---------------
 ### 0- Can "cancel, edit, approve or deny"(review) his/her own requests.
 ### 1- Can "approve, deny or edit"(review) other's requests.
 ### 2- Can not create, delete or edit account
 
- Normal(0):
+### Normal(0):
 ------------
 ### 0- Can "cancel or edit"(review) his/her own requests.
 ### 1- Can request file transfer to be reviewed later by a moderator.
@@ -68,7 +79,7 @@ Permission:
 ### 3- Can not "approve, deny or edit"(review) other's requests.
 ### 4- Can view and download other's approved requests of which he/she is a recipient.
 
- Admin + Moderator(6):
+### Admin + Moderator(6):
 ----------------------- 
 ### *Can do everything
  
