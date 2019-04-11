@@ -20,94 +20,94 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 ![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/trans_req.png)
 
 
-## How to setup:
+### How to setup:
 
-### In __init__.py
+##### In __init__.py
 --------------------
-### 0- setup configuration for mail server credential.
+##### 0- setup configuration for mail server credential.
 
-### 1- setup path to upload folder: appFlask.config['UPLOAD_FOLDER'] = "Path/to/Quarantine/Folder"
+##### 1- setup path to upload folder: appFlask.config['UPLOAD_FOLDER'] = "Path/to/Quarantine/Folder"
 
 
 
-### To initiate first user in an empty database:
+##### To initiate first user in an empty database:
 -------------------------------------
-### 0- Go to python REPL inside application folder
+##### 0- Go to python REPL inside application folder
 
-### 1- from FileTransferPackage import db,bcrypt
+##### 1- from FileTransferPackage import db,bcrypt
 
-### 2- from FileTransferPackage.models import *
+##### 2- from FileTransferPackage.models import *
 
-### 3- db.create_all()
+##### 3- db.create_all()
 
-### 4- pass1=bcrypt.generate_password_hash("123456").decode('utf-8')
+##### 4- pass1=bcrypt.generate_password_hash("123456").decode('utf-8')
 
-### 5- u1=User(name="admin", surname="adminian", username="adm", email="admin@example.com", password=pass1, permission=6)
+##### 5- u1=User(name="admin", surname="adminian", username="adm", email="admin@example.com", password=pass1, permission=6)
 
-### 6- db.session.add(u1)
+##### 6- db.session.add(u1)
 
-### 7- db.session.commit()
+##### 7- db.session.commit()
 
 
-## User Privileges:
+### User Privileges:
 
-### Permission:
+##### Permission:
 ------------
 | admin |   moderator   |  normal  |
 | ----- |:-------------:| --------:|
 |   4   |       2       |     0    |
 
 
-### Admin(4):
+##### Admin(4):
 -----------
-### 0- Can "cancel or edit"(review) his/her own requests.
-### 1- Can request file transfer to be reviewed later by a moderator.
-### 2- Can create non moderator(admin or normal) account and delete, block or edit any account except most privileged one(admin + moderator). 
-### 3- Can not create an account with moderator privilege.
-### 4- Can view and download other's approved requests of which he/she is a recipient.
+##### 0- Can "cancel or edit"(review) his/her own requests.
+##### 1- Can request file transfer to be reviewed later by a moderator.
+##### 2- Can create non moderator(admin or normal) account and delete, block or edit any account except most privileged one(admin + moderator). 
+##### 3- Can not create an account with moderator privilege.
+##### 4- Can view and download other's approved requests of which he/she is a recipient.
 
-### Moderator(2):
+##### Moderator(2):
 ---------------
-### 0- Can "cancel, edit, approve or deny"(review) his/her own requests.
-### 1- Can "approve, deny or edit"(review) other's requests.
-### 2- Can not create, delete or edit account
+##### 0- Can "cancel, edit, approve or deny"(review) his/her own requests.
+##### 1- Can "approve, deny or edit"(review) other's requests.
+##### 2- Can not create, delete or edit account
 
-### Normal(0):
+##### Normal(0):
 ------------
-### 0- Can "cancel or edit"(review) his/her own requests.
-### 1- Can request file transfer to be reviewed later by a moderator.
-### 2- Can not "create, delete or edit" account.
-### 3- Can not "approve, deny or edit"(review) other's requests.
-### 4- Can view and download other's approved requests of which he/she is a recipient.
+##### 0- Can "cancel or edit"(review) his/her own requests.
+##### 1- Can request file transfer to be reviewed later by a moderator.
+##### 2- Can not "create, delete or edit" account.
+##### 3- Can not "approve, deny or edit"(review) other's requests.
+##### 4- Can view and download other's approved requests of which he/she is a recipient.
 
-### Admin + Moderator(6):
+##### Admin + Moderator(6):
 ----------------------- 
-### *Can do everything
+##### *Can do everything
  
  
-## Some Helpfull commands for maintainer:
+### Some Helpfull commands for maintainer:
 ----------------------------------------
-### User.__table__.drop(db.engine)
-### User.__table__.create(db.engine)
+##### User.__table__.drop(db.engine)
+##### User.__table__.create(db.engine)
 
-### UserRequest.drop(db.engine)
-### UserRequest.create(db.engine)
+##### UserRequest.drop(db.engine)
+##### UserRequest.create(db.engine)
 
-### User.query.all()
-### User.query.first()
-### User.query.get(id)
-### db.drop_all()
-### db.session.rollback()
+##### User.query.all()
+##### User.query.first()
+##### User.query.get(id)
+##### db.drop_all()
+##### db.session.rollback()
 
-### sqlite3:
+##### sqlite3:
 ----------
-### .tables
-### .schema 
-### .quit
-### .help
-### .open mydb.db
-### .mode column
-### .header on/off
+##### .tables
+##### .schema 
+##### .quit
+##### .help
+##### .open mydb.db
+##### .mode column
+##### .header on/off
 
 FileTransferWebApp/
 ├── FileTransferPackage
