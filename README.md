@@ -53,8 +53,9 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 
 ### Permission:
 ------------
-### admin   moderator   normal
-###   4         2         0
+| admin |   moderator   |  normal  |
+| ----- |:-------------:| --------:|
+|   4   |       2       |     0    |
 
 
 ### Admin(4):
