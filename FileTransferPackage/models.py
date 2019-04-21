@@ -2,6 +2,9 @@ from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from FileTransferPackage import db, login_manager, appFlask
 from flask_login import UserMixin
+import os
+import base64
+import onetimepass
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -42,6 +45,7 @@ class Request(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
+    otp_secret = db.Column(db.String(16), nullable=False)
     surname = db.Column(db.String(25), nullable=False)
     name = db.Column(db.String(15), nullable=False)
     permission = db.Column(db.Integer, nullable=False)
@@ -55,9 +59,23 @@ class User(db.Model, UserMixin):
     out_reqs = db.relationship('Request', backref='requester', lazy='dynamic', foreign_keys=Request.requester_id)
     last_login = db.Column(db.DateTime, nullable=False, default=datetime(1970,1,1))
     state = db.Column(db.String(15), nullable=False, default="allowed")
-    
-    def get_reset_token(self, expires_sec=1800):
-        s = Serializer(appFlask.config['SECRET_KEY'], expires_sec)
+	
+    '''
+      def __init__(self, **kwargs):
+      super(User, self).__init__(**kwargs)
+      if self.otp_secret is None:
+      # generate a random secret
+      self.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
+    '''
+
+    def get_totp_uri(self):
+        return 'otpauth://totp/2FA-FileTransWebApp:{0}?secret={1}&issuer=2FA-FileTransWebApp&algorithm=SHA1&digits=6&period=300'.format(self.username, self.otp_secret)
+
+    def verify_totp(self, token):
+        return onetimepass.valid_totp(token, self.otp_secret, interval_length=300)
+		
+    def get_reset_token(self, expires_sec=1800):       	
+        s = Serializer(appFlask.config["SECRET_KEY"] , expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod

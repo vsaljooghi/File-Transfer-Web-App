@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, jsonify, redirect, request, send_from_directory
+from flask import render_template, url_for, flash, jsonify, redirect, request, send_from_directory, session
 from FileTransferPackage import appFlask, db, bcrypt, mail
 from FileTransferPackage.forms import (AccountCreationForm, AccountEditForm, LoginForm, FileUploadForm,
          RequestResetForm, AccountResetPasswordForm, ReqEditForm, ReqFWForm)
@@ -11,6 +11,9 @@ import json
 import shutil
 from flask_mail import Message
 from functools import wraps
+import pyqrcode
+from io import BytesIO
+import base64
 
 myreferrer="/"
 
@@ -220,7 +223,7 @@ def create_account():
     form = AccountCreationForm()
     if form.validate_on_submit():
         permission = form.admin_checkbox.data * 4 + form.moderator_checkbox.data * 2
-        user = User(name=form.name.data, surname=form.surname.data, username=form.username.data, email=form.email.data, permission=permission, password="")
+        user = User(name=form.name.data, surname=form.surname.data, username=form.username.data, email=form.email.data, permission=permission, password="", otp_secret="")
  
         admin_role = Role.query.filter_by(role="admin").first()
         moderator_role = Role.query.filter_by(role="moderator").first()
@@ -263,7 +266,6 @@ def req_actions(action):
           return redirect(url_for('panel'))
  
     referrer = request.headers.get("Referer")
-    print(referrer) 
     if action=="approved" or action=="denied" or action == "cancelled":      
         myReq.state = State.query.filter_by(state=action).first()
         myReq.reviewer = current_user
@@ -452,7 +454,7 @@ def login():
         if not myUser:  #Maybe entered email as username
            myUser = User.query.filter_by(email=form.username.data).first()
 
-        if myUser and bcrypt.check_password_hash(myUser.password, form.password.data):
+        if myUser and bcrypt.check_password_hash(myUser.password, form.password.data) and myUser.verify_totp(form.token.data):
            login_user(myUser, remember=form.remember.data)
            previous_login = str(myUser.last_login)
            myUser.last_login = datetime.datetime.utcnow()
@@ -461,7 +463,7 @@ def login():
            flash('Your previous login was at ' + previous_login, 'success')
            return redirect(next_page) if next_page else redirect(url_for('panel'))
         else:
-           flash('Login Unsuccessful. Please check username and password', 'danger')
+           flash('Login Unsuccessful. Invalid username, password or token.', 'danger')
        
     return render_template('login.html', title='Login', form=form)
     
@@ -498,11 +500,53 @@ def reset_token(token):
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hashed_password
+        user.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
         db.session.commit()
-        flash('Your password has been updated! You are now able to log in', 'success')
-        return redirect(url_for('login'))
+        flash('Your password has been updated! Next Step is to setup OTP', 'success')
+        session['username'] = user.username
+        return redirect(url_for('two_factor_setup'))
     return render_template('reset_token.html', title='Reset Password', user=user, form=form)
-    
+
+@appFlask.route('/twofactor')
+def two_factor_setup():
+    if 'username' not in session:
+        flash('username not in session', 'warning')			
+        return redirect(url_for('home'))
+
+    user = User.query.filter_by(username=session['username']).first()
+	
+    if user is None:
+        return redirect(url_for('home'))
+		
+    # since this page contains the sensitive qrcode, make sure the browser
+    # does not cache it
+    return render_template('two-factor-setup.html', title='2F setup'), 200, {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'}
+		
+@appFlask.route('/qrcode')
+def qrcode():
+    if 'username' not in session:
+        abort(404)
+    user = User.query.filter_by(username=session['username']).first()
+    if user is None:
+        abort(404)
+
+    # for added security, remove username from session
+    del session['username']
+
+    # render qrcode for FreeTOTP
+    totp_spec = user.get_totp_uri()
+    url = pyqrcode.create(totp_spec)
+    stream = BytesIO()
+    url.svg(stream, scale=5)
+    return stream.getvalue(), 200, {
+        'Content-Type': 'image/svg+xml',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'}
+		
 @appFlask.route('/downloads', methods=['GET'])
 @login_required
 def download_file():

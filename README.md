@@ -1,6 +1,6 @@
-<p> File transfer web application facilitates file transfer from one computer netwrok to a second computer network. The user can upload a compressed file from his/her own panel on source network and then download the same file in a destination network or he/she can put   
+<p> File transfer web application facilitates file transfer from one computer network to a second computer network. The user can upload a compressed file from his/her own panel on source network and then download the same file in a destination network or he/she can put   
 other recipients as downloader of the file in the destination network.
-This web app is handy in air-gapped environments with limited access(no internet, closed USB ports and etc) for transfering file to 
+This web app is handy in air-gapped environments with limited access(no Internet, closed USB ports and etc) for transferring file to 
 an open access computer network (The web app acts as a gatekeeper between two networks).
 It provides the capability for account management(create, edit, delete, block account) and request management(approve, cancel, deny, 
 edit, forward). The file transfer request shall be reviewed by a reviewer and in case of approvement, the requester can download the file.</p>
@@ -85,7 +85,7 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 ##### *Can do everything
  
  
-### Some Helpfull commands for maintainer:
+### Some Helpful commands for maintainer:
 ----------------------------------------
 ##### User.__table__.drop(db.engine)
 ##### User.__table__.create(db.engine)

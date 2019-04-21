@@ -51,6 +51,7 @@ class AccountResetPasswordForm(FlaskForm):
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
+    token = StringField('Token', validators=[Required(), Length(6, 6)])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
     
