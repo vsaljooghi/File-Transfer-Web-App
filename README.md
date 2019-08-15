@@ -22,7 +22,7 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 ![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/QR_2FA.png)
 
 
-##### Securtiy:
+##### Security:
 ------------------
 ##### 0- Prevention of Cross-Site Request Forgery(CSRF/XSRF) attack.
 ##### 1- Prevention of Cross-Site Scripting(XSS) attack.
@@ -65,7 +65,7 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 ##### Permission:
 ------------
 | admin + moderator | admin |   moderator   |  normal  |
-|:----------------- |:-----:|:-------------:| --------:|
+|:-----------------:|:-----:|:-------------:|:--------:|
 |         6         |   4   |       2       |     0    |
 
 
