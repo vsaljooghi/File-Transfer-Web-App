@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Required
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Required, Regexp
 from FileTransferPackage.models import User
 
 class AccountCreationForm(FlaskForm):
@@ -36,6 +36,7 @@ class AccountEditForm(FlaskForm):
 
 class RequestResetForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
+    captcha = StringField('Captcha', validators=[DataRequired(), Length(4, 4)])	
     submit = SubmitField('Password Reset')
 
     def validate_email(self, email):
@@ -44,12 +45,18 @@ class RequestResetForm(FlaskForm):
             raise ValidationError('No account with that email. Request admin to create you an account.')
     
 class AccountResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[\
+	                Regexp(".*[A-Z].*", message="Password must contain at least one capital letter."), \
+					Regexp(".*[a-z].*", message="Password must contain at least one small letter."), \
+					Regexp(".*[0-9].*", message="Password must contain at least one number."),\
+					Regexp(".*[!@#$%&*?<>{}].*", message="Password must contain at least one of !@#$%&*?<>{} characters."), \
+					Regexp("^.{8,15}$", message="Password must be between 8-15 characters.") \
+					])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Submit')
     
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=35)])
     password = PasswordField('Password', validators=[DataRequired()])
     token = StringField('Token', validators=[Required(), Length(6, 6)])
     remember = BooleanField('Remember Me')

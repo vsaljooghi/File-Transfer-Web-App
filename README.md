@@ -19,6 +19,17 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 
 ![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/trans_req.png)
 
+![Screen Shot](https://raw.githubusercontent.com/vsaljooghi/File-Transfer-Web-App/master/FileTransferPackage/DOC/QR_2FA.png)
+
+
+##### Securtiy:
+------------------
+##### 0- Prevention of Cross-Site Request Forgery(CSRF/XSRF) attack.
+##### 1- Prevention of Cross-Site Scripting(XSS) attack.
+##### 2- Using Captcha to prevent denial of service(DOS) attack.
+##### 3- Using complex password policy.
+##### 4- Using one-time password(OTP) to implement two-factor authentication. (To set up it on Android smart phones: you can use FreeOTP apk)
+##### 5- Set up of HTTP header to avoid caching of sensitive data (In case a third person uses browser back button to retrieve panel after logout)
 
 ### How to setup:
 
@@ -32,7 +43,7 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 
 ##### To initiate first user in an empty database:
 -------------------------------------
-##### 0- Go to python REPL inside application folder
+##### 0- Change to root of application folder and then run python REPL and then run the following commands: 
 
 ##### 1- from FileTransferPackage import db,bcrypt
 
@@ -53,9 +64,9 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 
 ##### Permission:
 ------------
-| admin |   moderator   |  normal  |
-| ----- |:-------------:| --------:|
-|   4   |       2       |     0    |
+| admin + moderator | admin |   moderator   |  normal  |
+|:----------------- |:-----:|:-------------:| --------:|
+|         6         |   4   |       2       |     0    |
 
 
 ##### Admin(4):

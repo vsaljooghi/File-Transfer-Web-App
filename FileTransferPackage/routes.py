@@ -1,5 +1,6 @@
 from flask import render_template, url_for, flash, jsonify, redirect, request, send_from_directory, session
-from FileTransferPackage import appFlask, db, bcrypt, mail
+from FileTransferPackage import appFlask, db, bcrypt, mail, captcha
+from flask_wtf import FlaskForm
 from FileTransferPackage.forms import (AccountCreationForm, AccountEditForm, LoginForm, FileUploadForm,
          RequestResetForm, AccountResetPasswordForm, ReqEditForm, ReqFWForm)
 from FileTransferPackage.models import User, Request, State, UserRequest, Role
@@ -17,6 +18,16 @@ import base64
 
 myreferrer="/"
 
+@appFlask.after_request
+def add_header(response):
+    """
+    Register a function to be run after each request.
+    """
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+	
 def moderator_required(Orig_func):
    @wraps(Orig_func)
    def wrapper_func(*args, **kwargs):
@@ -317,7 +328,7 @@ def edit_req(req_id):
     return render_template('edit_req.html', title='Edit Request', form=form, users=users)
     
 
-@appFlask.route("/delete_account/<int:account_id>", methods=['GET','POST'])
+@appFlask.route("/delete_account/<int:account_id>", methods=['POST'])
 @login_required
 @admin_required
 def delete_account(account_id):
@@ -339,6 +350,8 @@ def delete_account(account_id):
 def delete_accounts():
     role = request.args.get('role', '', type=str)
     page = request.args.get('page', 1, type=int)
+    form = FlaskForm()
+	
     if role == '':
        users = User.query.order_by(User.create_date.desc()).paginate(per_page=10, page=page)
     elif role == "admin" or role == "normal" or role == "moderator":
@@ -347,7 +360,7 @@ def delete_accounts():
     else:
        flash('Given role is not supported', 'danger')
        return redirect(url_for('panel'))    
-    return render_template('delete_accounts.html', title='Delete Account', users=users)
+    return render_template('delete_accounts.html', title='Delete Account', users=users, form=form)
 
 
 @appFlask.route("/edit_account", methods=['GET','POST'])
@@ -482,11 +495,16 @@ def send_reset_email(user):
 @appFlask.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     form = RequestResetForm()
+	
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.', 'info')
-        return redirect(url_for('login'))
+        if captcha.validate():		
+          send_reset_email(user)
+          flash('An email has been sent with instructions to reset your password.', 'info')
+          return redirect(url_for('login'))
+        else:
+            flash('Captcha was wrong.', 'warning')
+           		
     return render_template('reset_request.html', title='Reset Password', form=form)
 
 

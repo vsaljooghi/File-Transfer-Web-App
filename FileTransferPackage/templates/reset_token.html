@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
+	<style>
+	    h6 {
+	      line-height: 0.5 !important;
+	    }
+        </style>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="icon" type="image/png" href={{ url_for('static', filename='img/FileTransfer.png') }}>
@@ -31,10 +36,20 @@
           
           <div class="content-section">
             {% from "includes/_formhelpers.html" import render_field %}
+	    <legend class="border-bottom mb-3">Password Policy:</legend>
+
+	    <ul>
+	      <li><h6><small>must contain at least one capital letter.</small></h6></li>
+	      <li><h6><small>must contain at least one small letter.</small></h6></li>
+	      <li><h6><small>must contain at least one number.</small></h6></li>
+	      <li><h6><small>must contain at least one of !@#$%&*?<>{} characters.</small></h6></li>
+	      <li><h6><small>must be between 8-15 characters.</small></h6></li>		  
+	    </ul>
+			
             <form method="POST" action="">
-                {{ form.hidden_tag() }}
+		{{ form.hidden_tag() }}  <!-- Protect against(prevent) Cross-Site Request Forgery(CSRF, XSRF) attack -->
                 <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Reset Password for {{ user.username }}</legend>
+					<legend class="border-bottom mb-3">Reset Password for {{ user.username }}</legend>
                     <div class="form-group"> {{ render_field(form.password) }} </div>
                     
                     <div class="form-group"> {{ render_field(form.confirm_password) }} </div>

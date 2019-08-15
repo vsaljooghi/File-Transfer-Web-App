@@ -59,7 +59,8 @@
                 
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <form action="" method="POST">
+		  <form method="POST" action="">
+		   {{ form.hidden_tag() }} <!-- Protect against(prevent) Cross-Site Request Forgery(CSRF, XSRF) attack -->
                     <input class="btn btn-danger" type="submit" value="Delete">
                   </form>
                 </div>

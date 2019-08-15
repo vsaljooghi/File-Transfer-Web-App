@@ -32,7 +32,7 @@
           <div class="content-section vertical-align">
             {% from "includes/_formhelpers.html" import render_field %}
             <form method="POST" action="">
-                {{ form.hidden_tag() }}
+		{{ form.hidden_tag() }}  <!-- Protect against(prevent) Cross-Site Request Forgery(CSRF, XSRF) attack -->
                 <fieldset class="form-group">
                     <legend class="border-bottom mb-4">Log In</legend>
                     <div class="form-group">
