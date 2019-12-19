@@ -120,78 +120,99 @@ edit, forward). The file transfer request shall be reviewed by a reviewer and in
 ##### .mode column
 ##### .header on/off
 
-FileTransferWebApp/
+
+### What's included:
+
+```text
+.
 ├── FileTransferPackage
-│   ├── DB
-│   │   └── FileTransfer.db
-│   ├── forms.py
-│   ├── __init__.py
-│   ├── models.py
-│   ├── routes.py
-│   ├── static
-│   │   ├── css
-│   │   │   ├── all.min.css
-│   │   │   ├── bootstrap-grid.min.css
-│   │   │   ├── bootstrap-grid.min.css.map
-│   │   │   ├── bootstrap.min.css
-│   │   │   ├── bootstrap.min.css.map
-│   │   │   ├── bootstrap-reboot.min.css
-│   │   │   ├── bootstrap-reboot.min.css.map
-│   │   │   └── main.css
-│   │   ├── img
-│   │   │   ├── FileTransfer.png
-│   │   │   └── searchicon.png
-│   │   ├── js
-│   │   │   ├── AJAX2GetReqInfo.js
-│   │   │   ├── bootstrap.bundle.js
-│   │   │   ├── bootstrap.bundle.js.map
-│   │   │   ├── bootstrap.bundle.min.js
-│   │   │   ├── bootstrap.bundle.min.js.map
-│   │   │   ├── bootstrap.js
-│   │   │   ├── bootstrap.js.map
-│   │   │   ├── bootstrap.min.js
-│   │   │   ├── bootstrap.min.js.map
-│   │   │   ├── delUser.js
-│   │   │   ├── ImportContacts.js
-│   │   │   ├── jquery-3.3.1.js
-│   │   │   ├── reqAction.js
-│   │   │   ├── searchContacts.js
-│   │   │   └── SelectContacts.js
-│   │   └── webfonts
-│   │       ├── fa-brands-400.eot
-│   │       ├── fa-brands-400.svg
-│   │       ├── fa-brands-400.ttf
-│   │       ├── fa-brands-400.woff
-│   │       ├── fa-brands-400.woff2
-│   │       ├── fa-regular-400.eot
-│   │       ├── fa-regular-400.svg
-│   │       ├── fa-regular-400.ttf
-│   │       ├── fa-regular-400.woff
-│   │       ├── fa-regular-400.woff2
-│   │       ├── fa-solid-900.eot
-│   │       ├── fa-solid-900.svg
-│   │       ├── fa-solid-900.ttf
-│   │       ├── fa-solid-900.woff
-│   │       └── fa-solid-900.woff2
-│   └── templates
-│       ├── create_account.html
-│       ├── delete_accounts.html
-│       ├── edit_account.html
-│       ├── edit_accounts.html
-│       ├── edit_req.html
-│       ├── fw_req.html
-│       ├── home.html
-│       ├── includes
-│       │   ├── _colorize.html
-│       │   └── _formhelpers.html
-│       ├── layout.html
-│       ├── login.html
-│       ├── panel_moderator.html
-│       ├── panel_normal.html
-│       ├── reset_request.html
-│       ├── reset_token.html
-│       ├── trans_req.html
-│       └── x_reqs.html
+│   ├── DB
+│   │   └── FileTransfer.db
+│   ├── DOC
+│   │   ├── create_account.png
+│   │   ├── DB_diagram.png
+│   │   ├── DB_diagram.xml
+│   │   ├── delete_accounts.png
+│   │   ├── Diagram_FileTransfer.png
+│   │   ├── Diagram_FileTransfer.xml
+│   │   ├── edit_accounts.png
+│   │   ├── home_page.png
+│   │   ├── panel_moderator.png
+│   │   ├── QR_2FA.png
+│   │   ├── reset_password_email.png
+│   │   ├── reset_password_request.png
+│   │   ├── trans_req.png
+│   │   └── راهنما وب اپلیکیشن انتقال فایل.docx
+│   ├── forms.py
+│   ├── __init__.py
+│   ├── __init__.pyc
+│   ├── models.py
+│   ├── routes.py
+│   ├── static
+│   │   ├── css
+│   │   │   ├── all.min.css
+│   │   │   ├── bootstrap-grid.min.css
+│   │   │   ├── bootstrap-grid.min.css.map
+│   │   │   ├── bootstrap.min.css
+│   │   │   ├── bootstrap.min.css.map
+│   │   │   ├── bootstrap-reboot.min.css
+│   │   │   ├── bootstrap-reboot.min.css.map
+│   │   │   └── main.css
+│   │   ├── img
+│   │   │   ├── FileTransfer.png
+│   │   │   └── searchicon.png
+│   │   ├── js
+│   │   │   ├── AJAX2GetReqInfo.js
+│   │   │   ├── bootstrap.bundle.js
+│   │   │   ├── bootstrap.bundle.js.map
+│   │   │   ├── bootstrap.bundle.min.js
+│   │   │   ├── bootstrap.bundle.min.js.map
+│   │   │   ├── bootstrap.js
+│   │   │   ├── bootstrap.js.map
+│   │   │   ├── bootstrap.min.js
+│   │   │   ├── bootstrap.min.js.map
+│   │   │   ├── delUser.js
+│   │   │   ├── ImportContacts.js
+│   │   │   ├── jquery-3.3.1.js
+│   │   │   ├── reqAction.js
+│   │   │   ├── searchContacts.js
+│   │   │   └── SelectContacts.js
+│   │   └── webfonts
+│   │       ├── fa-brands-400.eot
+│   │       ├── fa-brands-400.svg
+│   │       ├── fa-brands-400.ttf
+│   │       ├── fa-brands-400.woff
+│   │       ├── fa-brands-400.woff2
+│   │       ├── fa-regular-400.eot
+│   │       ├── fa-regular-400.svg
+│   │       ├── fa-regular-400.ttf
+│   │       ├── fa-regular-400.woff
+│   │       ├── fa-regular-400.woff2
+│   │       ├── fa-solid-900.eot
+│   │       ├── fa-solid-900.svg
+│   │       ├── fa-solid-900.ttf
+│   │       ├── fa-solid-900.woff
+│   │       └── fa-solid-900.woff2
+│   └── templates
+│       ├── create_account.html
+│       ├── delete_accounts.html
+│       ├── edit_account.html
+│       ├── edit_accounts.html
+│       ├── edit_req.html
+│       ├── fw_req.html
+│       ├── home.html
+│       ├── includes
+│       │   ├── _colorize.html
+│       │   └── _formhelpers.html
+│       ├── layout.html
+│       ├── login.html
+│       ├── panel_moderator.html
+│       ├── panel_normal.html
+│       ├── reset_request.html
+│       ├── reset_token.html
+│       ├── trans_req.html
+│       ├── two-factor-setup.html
+│       └── x_reqs.html
 ├── README.md
 └── run.py
-
+```
